@@ -5,8 +5,9 @@ FastAPI application factory. Call create_app() to get a configured instance.
 """
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import Any
 
 import structlog
 from fastapi import FastAPI
@@ -20,8 +21,7 @@ log = structlog.get_logger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Build the pipeline once at startup; share it via app.state."""
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     log.info("atlas_rag_starting", provider_llm=settings.llm_provider, provider_embed=settings.embedding_provider)
     app.state.pipeline = RAGPipeline.from_settings(settings)
     log.info("atlas_rag_ready")

@@ -16,7 +16,6 @@ from typing import Literal
 
 from atlas_rag.config import settings
 
-
 ChunkStrategy = Literal["fixed", "recursive", "semantic"]
 
 _SEPARATORS = ["\n\n", "\n", ". ", " ", ""]
@@ -30,7 +29,6 @@ class ChunkConfig:
 
 
 def chunk_text(text: str, cfg: ChunkConfig | None = None) -> list[str]:
-    """Entry point. Delegates to the appropriate strategy."""
     if not text.strip():
         return []
     c = cfg or ChunkConfig()
