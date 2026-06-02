@@ -114,6 +114,6 @@ def _build_store(cfg: Settings) -> BaseStore:
 def _build_generator(cfg: Settings) -> BaseGenerator:
     if cfg.llm_provider == LLMProvider.OPENAI:
         from atlas_rag.generation.openai import OpenAIGenerator
-        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)  # type: ignore[no-any-return]
+        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)
     from atlas_rag.generation.ollama import OllamaGenerator
-    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)  # type: ignore[no-any-return]
+    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)
