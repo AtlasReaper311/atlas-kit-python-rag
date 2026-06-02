@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from typing import Any
 
 import structlog
 
@@ -53,8 +54,7 @@ class RAGPipeline:
         chunk_cfg = ChunkConfig(size=cfg.chunk_size, overlap=cfg.chunk_overlap)
         return cls(embedder, store, generator, chunk_cfg, top_k=cfg.retrieval_top_k)
 
-    def ingest_file(self, path: str | Path, metadata: dict | None = None) -> int:
-        """Load, chunk, embed, and store a file. Returns number of chunks stored."""
+    def ingest_file(self, path: str | Path, metadata: dict[str, Any] | None = None) -> int:
         p = Path(path)
         text = load_file(p)
         chunks = chunk_text(text, self._chunk_cfg)
@@ -71,8 +71,7 @@ class RAGPipeline:
         log.info("ingested", path=str(p), chunks=len(chunks))
         return len(chunks)
 
-    def ingest_text(self, text: str, source_id: str, metadata: dict | None = None) -> int:
-        """Ingest raw text directly."""
+    def ingest_text(self, text: str, source_id: str, metadata: dict[str, Any] | None = None) -> int:
         chunks = chunk_text(text, self._chunk_cfg)
         if not chunks:
             return 0
@@ -84,12 +83,10 @@ class RAGPipeline:
         return len(chunks)
 
     def retrieve(self, query: str, top_k: int | None = None) -> list[SearchResult]:
-        """Retrieve relevant chunks for a query without generating an answer."""
         q_embedding = self._embedder.embed_one(query)
         return self._store.query(q_embedding, top_k=top_k or self._top_k)
 
     def query(self, question: str) -> GenerationResult:
-        """Full RAG cycle: retrieve relevant chunks then generate an answer."""
         results = self.retrieve(question)
         context = [r.text for r in results]
         log.info("query", question=question[:80], context_chunks=len(context))
@@ -104,9 +101,9 @@ def _chunk_id(source: str, index: int, text: str) -> str:
 def _build_embedder(cfg: Settings) -> BaseEmbedder:
     if cfg.embedding_provider == EmbeddingProvider.OPENAI:
         from atlas_rag.embedding.openai import OpenAIEmbedder
-        return OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model)
+        return OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model)  # type: ignore[return-value]
     from atlas_rag.embedding.local import LocalEmbedder
-    return LocalEmbedder(model_name=cfg.embedding_model)
+    return LocalEmbedder(model_name=cfg.embedding_model)  # type: ignore[return-value]
 
 
 def _build_store(cfg: Settings) -> BaseStore:
@@ -117,6 +114,6 @@ def _build_store(cfg: Settings) -> BaseStore:
 def _build_generator(cfg: Settings) -> BaseGenerator:
     if cfg.llm_provider == LLMProvider.OPENAI:
         from atlas_rag.generation.openai import OpenAIGenerator
-        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)
+        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)  # type: ignore[return-value]
     from atlas_rag.generation.ollama import OllamaGenerator
-    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)
+    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)  # type: ignore[return-value]

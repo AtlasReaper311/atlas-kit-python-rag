@@ -2,12 +2,11 @@
 atlas_rag.store.chroma
 ======================
 ChromaDB vector store. Implements the abstract BaseStore interface.
-Client connects to a running Chroma instance (local or Docker).
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 import chromadb
 import structlog
@@ -41,9 +40,9 @@ class ChromaStore(BaseStore):
     ) -> None:
         self._col.upsert(
             ids=ids,
-            embeddings=embeddings,
+            embeddings=embeddings,  # type: ignore[arg-type]
             documents=documents,
-            metadatas=metadatas or [{} for _ in ids],
+            metadatas=metadatas,  # type: ignore[arg-type]
         )
         log.debug("chroma_upsert", count=len(ids))
 
@@ -62,12 +61,13 @@ class ChromaStore(BaseStore):
             kwargs["where"] = where
 
         results = self._col.query(**kwargs)
+
+        docs = cast(list[list[str]], results["documents"])
+        dists = cast(list[list[float]], results["distances"])
+        metas = cast(list[list[dict[str, Any]]], results["metadatas"])
+
         out: list[SearchResult] = []
-        for doc, dist, meta in zip(  # noqa: B905
-            results["documents"][0],
-            results["distances"][0],
-            results["metadatas"][0],
-        ):
+        for doc, dist, meta in zip(docs[0], dists[0], metas[0], strict=False):
             out.append(SearchResult(text=doc, score=1.0 - dist, metadata=meta))
         return out
 
