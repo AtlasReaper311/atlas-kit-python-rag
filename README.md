@@ -7,25 +7,20 @@ A foundation for Retrieval-Augmented Generation pipelines. Not a tutorial. Drop 
 ---
 
 ## Architecture
-cat > ~/atlas-kit-python-rag/README.md << 'EOF'
-# atlas-kit-python-rag
 
-> Production-structured Python RAG starter kit — part of [Atlas Systems](https://atlas-systems.uk) P-02 Library.
-
-A foundation for Retrieval-Augmented Generation pipelines. Not a tutorial. Drop it in, wire your documents, swap providers via config.
-
----
-
-## Architecture
+```
 Documents → Loader → Chunker → Embedder → Vector Store
-↓
-Query → Embedder → Retriever → Generator → Answer**Provider abstraction:** swap embedding or LLM provider by changing one env var. No code changes.
+                                                ↓
+                          Query → Embedder → Retriever → Generator → Answer
+```
+
+Provider abstraction: swap embedding or LLM provider by changing one env var. No code changes.
 
 | Layer | Default | Alternatives |
 |---|---|---|
 | Embedding | `sentence-transformers` (local) | OpenAI `text-embedding-3-small` |
-| Vector store | ChromaDB | (extend `BaseStore`) |
-| LLM | Ollama (local) | OpenAI GPT-4o-mini |
+| Vector store | ChromaDB | extend `BaseStore` |
+| LLM | Ollama (local) | OpenAI `gpt-4o-mini` |
 
 ---
 
@@ -41,6 +36,7 @@ docker-compose up
 The API is live at `http://localhost:8080`. ChromaDB at `http://localhost:8000`.
 
 **Ingest a document:**
+
 ```bash
 curl -X POST http://localhost:8080/ingest/text \
   -H "Content-Type: application/json" \
@@ -48,6 +44,7 @@ curl -X POST http://localhost:8080/ingest/text \
 ```
 
 **Query:**
+
 ```bash
 curl -X POST http://localhost:8080/query \
   -H "Content-Type: application/json" \
@@ -94,9 +91,9 @@ mypy src/
 
 ## Design Notes
 
-**Why abstract base classes?** `BaseEmbedder` and `BaseGenerator` define interfaces independently of implementation. The pipeline composes them — it has no import dependency on OpenAI or Ollama. This is dependency inversion in practice: you can test the pipeline by injecting a mock embedder without touching real APIs.
+**Why abstract base classes?** `BaseEmbedder` and `BaseGenerator` define interfaces independently of implementation. The pipeline composes them — it has no import dependency on OpenAI or Ollama. Swap providers without touching pipeline code.
 
-**Why Pydantic Settings?** All config lives in `config.py` and is validated at startup. A missing required variable fails fast with a clear error, not a silent `None` three layers deep.
+**Why Pydantic Settings?** All config lives in `config.py` and is validated at startup. A missing variable fails fast with a clear error, not a silent `None` three layers deep.
 
 **Why multi-stage Docker?** `dev` target mounts source for hot-reload; `prod` strips dev tools and runs as a non-root user. Same Dockerfile, different build target — no duplication.
 
