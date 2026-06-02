@@ -1,9 +1,3 @@
-# Multi-stage build: dev target includes test/lint tools, prod is lean.
-# Usage:
-#   docker build --target dev -t atlas-rag:dev .
-#   docker build --target prod -t atlas-rag:prod .
-
-# ── Base ──────────────────────────────────────────────────────────────────────
 FROM python:3.12-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -13,19 +7,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY pyproject.toml requirements.txt ./
+COPY pyproject.toml ./
 COPY src/ ./src/
 
-# ── Dev ───────────────────────────────────────────────────────────────────────
 FROM base AS dev
 RUN pip install -e ".[dev]"
 CMD ["uvicorn", "atlas_rag.api.app:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
 
-# ── Prod ──────────────────────────────────────────────────────────────────────
 FROM base AS prod
-RUN pip install --no-deps -e "."
+RUN pip install -e "."
 
-# Run as non-root
 RUN useradd -m -u 1001 atlas
 USER atlas
 

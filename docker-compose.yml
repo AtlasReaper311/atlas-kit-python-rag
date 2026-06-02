@@ -5,11 +5,6 @@ services:
       - "8000:8000"
     volumes:
       - chroma_data:/chroma/.chroma/index
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   api:
     build:
@@ -23,10 +18,9 @@ services:
       CHROMA_HOST: chroma
       CHROMA_PORT: "8000"
     volumes:
-      - ./src:/app/src   # Hot-reload in dev
+      - ./src:/app/src
     depends_on:
-      chroma:
-        condition: service_healthy
+      - chroma
 
 volumes:
   chroma_data:
