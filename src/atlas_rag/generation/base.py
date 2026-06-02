@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
 
 @dataclass
 class GenerationResult:
@@ -12,6 +14,7 @@ class GenerationResult:
     @property
     def total_tokens(self) -> int:
         return self.prompt_tokens + self.completion_tokens
+
 
 class BaseGenerator(ABC):
     @abstractmethod

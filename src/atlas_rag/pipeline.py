@@ -15,12 +15,11 @@ Usage:
 from __future__ import annotations
 
 import hashlib
-import uuid
 from pathlib import Path
 
 import structlog
 
-from atlas_rag.config import Settings, EmbeddingProvider, LLMProvider
+from atlas_rag.config import EmbeddingProvider, LLMProvider, Settings
 from atlas_rag.embedding.base import BaseEmbedder
 from atlas_rag.generation.base import BaseGenerator, GenerationResult
 from atlas_rag.ingestion.chunker import ChunkConfig, chunk_text
@@ -45,18 +44,14 @@ class RAGPipeline:
         self._chunk_cfg = chunk_cfg or ChunkConfig()
         self._top_k = top_k
 
-    # ── Factory ───────────────────────────────────────────────────────────────
-
     @classmethod
-    def from_settings(cls, cfg: Settings) -> "RAGPipeline":
+    def from_settings(cls, cfg: Settings) -> RAGPipeline:
         """Build a fully-wired pipeline from Settings."""
         embedder = _build_embedder(cfg)
         store = _build_store(cfg)
         generator = _build_generator(cfg)
         chunk_cfg = ChunkConfig(size=cfg.chunk_size, overlap=cfg.chunk_overlap)
         return cls(embedder, store, generator, chunk_cfg, top_k=cfg.retrieval_top_k)
-
-    # ── Public API ────────────────────────────────────────────────────────────
 
     def ingest_file(self, path: str | Path, metadata: dict | None = None) -> int:
         """Load, chunk, embed, and store a file. Returns number of chunks stored."""
@@ -101,10 +96,7 @@ class RAGPipeline:
         return self._generator.generate(question, context)
 
 
-# ── Private helpers ───────────────────────────────────────────────────────────
-
 def _chunk_id(source: str, index: int, text: str) -> str:
-    """Deterministic chunk ID — same content at same position always gets the same ID."""
     fingerprint = hashlib.sha256(f"{source}:{index}:{text[:64]}".encode()).hexdigest()[:16]
     return f"{fingerprint}-{index}"
 

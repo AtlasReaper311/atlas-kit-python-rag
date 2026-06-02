@@ -63,7 +63,7 @@ class ChromaStore(BaseStore):
 
         results = self._col.query(**kwargs)
         out: list[SearchResult] = []
-        for doc, dist, meta in zip(
+        for doc, dist, meta in zip(  # noqa: B905
             results["documents"][0],
             results["distances"][0],
             results["metadatas"][0],

@@ -6,7 +6,7 @@ FastAPI application factory. Call create_app() to get a configured instance.
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import structlog
 from fastapi import FastAPI

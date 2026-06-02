@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 import structlog
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_exponential
-from atlas_rag.generation.base import BaseGenerator, GenerationResult
+
 from atlas_rag.config import settings
+from atlas_rag.generation.base import BaseGenerator, GenerationResult
 
 log = structlog.get_logger(__name__)
 
@@ -15,6 +17,7 @@ confidently, say so — do not fabricate details.
 Context:
 {context}
 """
+
 
 class OllamaGenerator(BaseGenerator):
     def __init__(self, base_url: str = settings.ollama_base_url, model: str = settings.ollama_model) -> None:

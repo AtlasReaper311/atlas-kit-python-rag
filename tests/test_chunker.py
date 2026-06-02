@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from atlas_rag.ingestion.chunker import ChunkConfig, chunk_text
 
 

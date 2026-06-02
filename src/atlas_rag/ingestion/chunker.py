@@ -4,15 +4,13 @@ atlas_rag.ingestion.chunker
 Text chunking strategies. Three modes:
 
 - fixed:      Simple character-count windows. Fast, predictable.
-- recursive:  Tries paragraph → sentence → word boundaries before falling back.
-              Preserves semantic units where possible.
-- semantic:   (stub) Placeholder for embedding-based boundary detection.
+- recursive:  Tries paragraph > sentence > word boundaries before falling back.
+- semantic:   Placeholder for embedding-based boundary detection.
 
 All chunkers return a list of strings, never empty strings.
 """
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from typing import Literal
 
@@ -38,13 +36,8 @@ def chunk_text(text: str, cfg: ChunkConfig | None = None) -> list[str]:
     c = cfg or ChunkConfig()
     if c.strategy == "fixed":
         return _fixed(text, c.size, c.overlap)
-    if c.strategy == "recursive":
-        return _recursive(text, c.size, c.overlap, _SEPARATORS)
-    # semantic: fall back to recursive until implemented
     return _recursive(text, c.size, c.overlap, _SEPARATORS)
 
-
-# ── Strategies ────────────────────────────────────────────────────────────────
 
 def _fixed(text: str, size: int, overlap: int) -> list[str]:
     chunks: list[str] = []
@@ -59,10 +52,6 @@ def _fixed(text: str, size: int, overlap: int) -> list[str]:
 
 
 def _recursive(text: str, size: int, overlap: int, separators: list[str]) -> list[str]:
-    """
-    Try splitting on progressively finer separators until chunks fit within `size`.
-    This preserves paragraph and sentence structure as long as possible.
-    """
     separator = separators[-1]
     for sep in separators:
         if sep and sep in text:
@@ -82,7 +71,6 @@ def _recursive(text: str, size: int, overlap: int, separators: list[str]) -> lis
             merged = separator.join(current).strip()
             if merged:
                 chunks.append(merged)
-            # Keep overlap worth of tokens from end
             while current and current_len > overlap:
                 removed = current.pop(0)
                 current_len -= len(removed) + len(separator)
@@ -94,7 +82,6 @@ def _recursive(text: str, size: int, overlap: int, separators: list[str]) -> lis
         if merged:
             chunks.append(merged)
 
-    # Recurse on any chunks still too large
     final: list[str] = []
     next_seps = separators[separators.index(separator) + 1:] if separator in separators else separators
     for chunk in chunks:
