@@ -1,11 +1,3 @@
-# atlas-kit-python-rag
-
-> Production-structured Python RAG starter kit — part of [Atlas Systems](https://atlas-systems.uk) P-02 Library.
-
-A foundation for Retrieval-Augmented Generation pipelines. Not a tutorial. Drop it in, wire your documents, swap providers via config.
-
----
-
 ## Architecture
 cat > ~/atlas-kit-python-rag/README.md << 'EOF'
 # atlas-kit-python-rag
