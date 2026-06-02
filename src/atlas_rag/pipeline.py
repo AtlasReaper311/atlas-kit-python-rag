@@ -101,9 +101,9 @@ def _chunk_id(source: str, index: int, text: str) -> str:
 def _build_embedder(cfg: Settings) -> BaseEmbedder:
     if cfg.embedding_provider == EmbeddingProvider.OPENAI:
         from atlas_rag.embedding.openai import OpenAIEmbedder
-        return OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model)  # type: ignore[return-value]
+        return OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model)  # type: ignore[no-any-return]
     from atlas_rag.embedding.local import LocalEmbedder
-    return LocalEmbedder(model_name=cfg.embedding_model)  # type: ignore[return-value]
+    return LocalEmbedder(model_name=cfg.embedding_model)  # type: ignore[no-any-return]
 
 
 def _build_store(cfg: Settings) -> BaseStore:
@@ -114,6 +114,6 @@ def _build_store(cfg: Settings) -> BaseStore:
 def _build_generator(cfg: Settings) -> BaseGenerator:
     if cfg.llm_provider == LLMProvider.OPENAI:
         from atlas_rag.generation.openai import OpenAIGenerator
-        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)  # type: ignore[return-value]
+        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)  # type: ignore[no-any-return]
     from atlas_rag.generation.ollama import OllamaGenerator
-    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)  # type: ignore[return-value]
+    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)  # type: ignore[no-any-return]
