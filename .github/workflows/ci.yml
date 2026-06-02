@@ -10,17 +10,6 @@ jobs:
     name: Lint · Type-check · Test
     runs-on: ubuntu-latest
 
-    services:
-      chroma:
-        image: chromadb/chroma:latest
-        ports:
-          - 8000:8000
-        options: >-
-          --health-cmd "curl -f http://localhost:8000/api/v1/heartbeat"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -40,7 +29,7 @@ jobs:
 
       - name: Test
         env:
-          LLM_PROVIDER: ollama           # Tests stub the generator — no real inference needed
+          LLM_PROVIDER: ollama
           EMBEDDING_PROVIDER: local
           CHROMA_HOST: localhost
           CHROMA_PORT: "8000"
