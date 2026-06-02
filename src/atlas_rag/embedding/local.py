@@ -17,4 +17,4 @@ class LocalEmbedder(BaseEmbedder):
         if not texts:
             return []
         vectors = self._model.encode(texts, show_progress_bar=False, convert_to_numpy=True)
-        return vectors.tolist()  # type: ignore[return-value]
+        return vectors.tolist()  # type: ignore[no-any-return]
