@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import structlog
 
@@ -99,11 +99,11 @@ def _chunk_id(source: str, index: int, text: str) -> str:
 
 
 def _build_embedder(cfg: Settings) -> BaseEmbedder:
-    if cfg.embedding_provider == EmbeddingProvider.OPENAI:
-        from atlas_rag.embedding.openai import OpenAIEmbedder
-        return OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model)  # type: ignore[no-any-return]
     from atlas_rag.embedding.local import LocalEmbedder
-    return LocalEmbedder(model_name=cfg.embedding_model)  # type: ignore[no-any-return]
+    from atlas_rag.embedding.openai import OpenAIEmbedder
+    if cfg.embedding_provider == EmbeddingProvider.OPENAI:
+        return cast(BaseEmbedder, OpenAIEmbedder(api_key=cfg.openai_api_key, model=cfg.embedding_model))
+    return cast(BaseEmbedder, LocalEmbedder(model_name=cfg.embedding_model))
 
 
 def _build_store(cfg: Settings) -> BaseStore:
@@ -112,8 +112,8 @@ def _build_store(cfg: Settings) -> BaseStore:
 
 
 def _build_generator(cfg: Settings) -> BaseGenerator:
-    if cfg.llm_provider == LLMProvider.OPENAI:
-        from atlas_rag.generation.openai import OpenAIGenerator
-        return OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model)
     from atlas_rag.generation.ollama import OllamaGenerator
-    return OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model)
+    from atlas_rag.generation.openai import OpenAIGenerator
+    if cfg.llm_provider == LLMProvider.OPENAI:
+        return cast(BaseGenerator, OpenAIGenerator(api_key=cfg.openai_api_key, model=cfg.openai_model))
+    return cast(BaseGenerator, OllamaGenerator(base_url=cfg.ollama_base_url, model=cfg.ollama_model))
