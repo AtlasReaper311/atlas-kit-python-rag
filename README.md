@@ -2,7 +2,7 @@
 
 > Production-structured Python RAG starter kit — part of [Atlas Systems](https://atlas-systems.uk) P-02 Library.
 
-A foundation for Retrieval-Augmented Generation pipelines. Not a tutorial. Drop it in, wire your documents, swap providers via config.
+A foundation for Retrieval-Augmented Generation pipelines. Drop it in, wire your documents, and swap providers via config.
 
 ---
 
