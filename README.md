@@ -15,7 +15,7 @@
 ![Python](https://img.shields.io/badge/python-3.12-f5a623?style=flat-square&labelColor=0a0a0f)
 [![CI](https://github.com/AtlasReaper311/atlas-kit-python-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/AtlasReaper311/atlas-kit-python-rag/actions)
 <!-- coverage-badge-start -->
-![Coverage](https://img.shields.io/badge/coverage-44%25-e24b4a?style=flat-square&labelColor=0a0a0f)
+![Coverage](https://img.shields.io/badge/coverage-62%25-e24b4a?style=flat-square&labelColor=0a0a0f)
 <!-- coverage-badge-end -->
 ![Vector store](https://img.shields.io/badge/vectors-chromadb-aaa9a0?style=flat-square&labelColor=0a0a0f)
 ![Cost](https://img.shields.io/badge/cost-%C2%A30-aaa9a0?style=flat-square&labelColor=0a0a0f)
