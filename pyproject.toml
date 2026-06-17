@@ -33,6 +33,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "ruff>=0.4.0",
     "mypy>=1.10.0",
+    "pytest-cov",
     "types-beautifulsoup4",
 ]
 
