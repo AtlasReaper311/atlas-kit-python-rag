@@ -95,6 +95,13 @@ ruff check src/
 mypy src/
 ```
 
+## Test coverage
+
+Coverage focuses on the pipeline orchestration and abstraction layer: chunking, the embedding interface, and the full ingest → retrieve → query flow, all proven with the real components rather than mocks. The provider adapters (`embedding/local.py`, `embedding/openai.py`, `generation/ollama.py`, `generation/openai.py`, `store/chroma.py`) are deliberately thin wrappers around third-party SDKs. They're exercised through integration testing against live services, not unit tests, which is why they show as uncovered in the badge above.
+
+That split is the point, not a gap: fast, dependency-free unit tests for orchestration logic, and real integration tests against the actual vendor at the boundary, rather than mocking a third-party SDK just to inflate a number. The API layer below adds direct route-level coverage on top of this.
+
+---
 ## Design notes
 
 **Why abstract base classes.** `BaseEmbedder` and `BaseGenerator` define interfaces independently of implementation. The pipeline composes them and has no import dependency on OpenAI or Ollama, so a provider swaps without touching pipeline code.
