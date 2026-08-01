@@ -22,7 +22,7 @@ dependencies = [
     "chromadb>=0.5.0",
     "numpy<2.5.0",  # NumPy 2.5+ requires Python 3.12.
     "sentence-transformers>=3.0.0",
-    "openai>=1.30.0",
+    "openai>=2.50.0",
     "tenacity>=8.3.0",
     "structlog>=24.1.0",
 ]
