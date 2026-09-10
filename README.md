@@ -112,7 +112,7 @@ That split is the point, not a gap: fast, dependency-free unit tests for orchest
 
 ## How it fits into Atlas Systems
 
-This is the reference implementation the rest of the RAG work is built from. [`ollama-rag-kit`](https://github.com/AtlasReaper311/ollama-rag-kit) takes the same pipeline shape and packages it as a multi-container service; the honours project reuses the architecture against UE5 audio documentation.
+This is the reference implementation the rest of the RAG work is built from. [`ollama-rag-kit`](https://github.com/AtlasReaper311/ollama-rag-kit) takes the same pipeline shape and packages it as a multi-container service; applied local-AI work can reuse the architecture for UE5 audio documentation and other interactive-system experiments.
 
 The transferable pattern is programming to interfaces: when the pipeline depends on a `BaseEmbedder` rather than a named vendor, the vendor becomes a config value instead of a rewrite.
 
